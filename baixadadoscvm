@@ -1,0 +1,32 @@
+def cvm(years, path, cdados):
+    print("{:-^100}".format("Empresas - Aquisição de Dados CVM"))
+    pasta = "{}\\dados_CVM".format(path)
+    if not os.path.exists(pasta):
+        os.mkdir(pasta)
+    os.chdir(pasta)
+    url = "https://dados.cvm.gov.br/dados/CIA_ABERTA/DOC/"
+
+    for dado in cdados:
+        for ano in years:
+            file_url = "{}{}/DADOS/{}_cia_aberta_{}.zip".format(url, dado, dado.lower(), ano)
+            file = "{}_cia_aberta_{}.zip".format(dado.lower(), ano)
+            print("{} {}".format(dado, ano))
+            try:
+                request.urlretrieve(file_url, file)
+                dirdado = "{}\\{}".format(pasta, dado)
+                if not os.path.exists(dirdado):
+                    os.mkdir(dirdado)
+                pastaextract = "{}\\{}".format(dirdado, ano)
+                pastaexiste = os.path.exists(pastaextract)
+                if not pastaexiste:
+                    os.mkdir(pastaextract)
+                z = ZipFile("{}_cia_aberta_{}.zip".format(dado.lower(), ano), 'r')
+                z.extractall(pastaextract)
+                z.close()
+                if pastaexiste:
+                    print("Atualizado {} {}".format(dado, ano))
+                else:
+                    print("Obtido {} {}".format(dado, ano))
+                os.remove("{}_cia_aberta_{}.zip".format(dado.lower(), ano))
+            except:
+                print("Não obtido {} {} XXXXXXXXXXXXXXXXX".format(dado, ano))
